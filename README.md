@@ -2,7 +2,8 @@
 
 A GNOME Shell extension that adjusts the spacing between items in the top bar's left, center, and right sections.
 
-[GNOME Shell 50](https://github.com/salirezak/topbar-spacing) ([badge](https://img.shields.io/badge/GNOME%20Shell-50-4a86cf)) [License: GPL v3](https://github.com/salirezak/topbar-spacing/blob/master/LICENSE) ([badge](https://img.shields.io/badge/License-GPLv3-blue.svg))
+[![GNOME Shell 50](https://img.shields.io/badge/GNOME%20Shell-50-4a86cf)](https://github.com/salirezak/colab-availability)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
 ## Features
 
