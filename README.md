@@ -61,6 +61,10 @@ For each panel section, preferences provide a switch to enable spacing adjustmen
 
 Bug reports and pull requests are welcome on [GitHub](https://github.com/salirezak/topbar-spacing). Please include your GNOME Shell version and relevant logs when reporting a problem.
 
+## Acknowledgments
+
+This project was inspired by and builds on ideas from [Status Area Horizontal Spacing for GNOME Shell](https://gitlab.com/p91paul/status-area-horizontal-spacing-gnome-shell).
+
 ## License
 
 This project is licensed under the [GNU General Public License v3.0](https://github.com/salirezak/topbar-spacing/blob/master/LICENSE).
