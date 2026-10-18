@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+    <schema id="org.gnome.shell.extensions.topbar-spacing" path="/org/gnome/shell/extensions/topbar-spacing/">
+        <key name="left-padding" type="i">
+            <default>1</default>
+            <range min="0" max="32"/>
+            <summary>Spacing between left panel items</summary>
+            <description>Spacing in pixels between items in the left panel.</description>
+        </key>
+        <key name="right-padding" type="i">
+            <default>1</default>
+            <range min="0" max="32"/>
+            <summary>Spacing between right panel items</summary>
+            <description>Spacing in pixels between items in the right panel.</description>
+        </key>
+        <key name="center-padding" type="i">
+            <default>1</default>
+            <range min="0" max="32"/>
+            <summary>Spacing between center panel items</summary>
+            <description>Spacing in pixels between items in the center panel.</description>
+        </key>
+
+        <key name="left-padding-enabled" type="b">
+            <default>true</default>
+            <summary>Enable left panel spacing</summary>
+        </key>
+
+        <key name="center-padding-enabled" type="b">
+            <default>true</default>
+            <summary>Enable center panel spacing</summary>
+        </key>
+
+        <key name="right-padding-enabled" type="b">
+            <default>true</default>
+            <summary>Enable right panel spacing</summary>
+</key>
+    </schema>
+</schemalist>
