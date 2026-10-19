@@ -27,6 +27,7 @@ export default class TopbarSpacingExtension extends Extension {
         ];
 
         this._settingsSignals = [];
+        this._buttons = new Set();
 
         for (const section of this._sections) {
             this._applySpacing(section);
@@ -93,43 +94,85 @@ export default class TopbarSpacingExtension extends Extension {
         if (!this._settings.get_boolean(section.enabledKey))
             return;
 
-        const value = this._settings.get_int(section.key);
+        if (button._tsSection === section) {
+            button._tsLine = this._buildStyleLine(
+                this._settings.get_int(section.key)
+            );
+
+            this._applyToButton(button);
+            return;
+        }
+
+        if (button._tsSection)
+            this._cleanupButton(button, true);
 
         if (button._tsOriginal === undefined)
             button._tsOriginal = button.get_style();
 
-        button._tsLine = this._buildStyleLine(value);
+        button._tsSection = section;
 
-        if (!button._tsSignalId) {
-            button._tsSignalId = button.connect('style-changed', () => {
-                const current = button.get_style();
+        button._tsLine = this._buildStyleLine(
+            this._settings.get_int(section.key)
+        );
 
-                if (current === button._tsApplied)
-                    return;
+        button._tsSignalId = button.connect('style-changed', () => {
+            const current = button.get_style();
 
-                button._tsOriginal = current;
+            if (current === button._tsApplied)
+                return;
 
-                this._applyToButton(button);
-            });
-        }
+            button._tsOriginal = current;
+
+            this._applyToButton(button);
+        });
+
+        button._tsDestroySignalId = button.connect('destroy', () => {
+            this._cleanupButton(button, false, true);
+        });
+
+        this._buttons.add(button);
 
         this._applyToButton(button);
     }
 
-    _restoreButton(button) {
+    _cleanupButton(button, restoreStyle = false, destroying = false) {
+        const originalStyle = button._tsOriginal;
+
         if (button._tsSignalId) {
-            button.disconnect(button._tsSignalId);
+            try {
+                button.disconnect(button._tsSignalId);
+            } catch {
+            }
+
             delete button._tsSignalId;
         }
 
-        if (button._tsOriginal !== undefined) {
-            button.set_style(button._tsOriginal);
+        if (button._tsDestroySignalId) {
+            if (!destroying) {
+                try {
+                    button.disconnect(button._tsDestroySignalId);
+                } catch {
+                }
+            }
+
+            delete button._tsDestroySignalId;
+        }
+
+        if (restoreStyle && !destroying && originalStyle !== undefined) {
+            button.set_style(originalStyle);
             this._refreshActor(button);
         }
+
+        this._buttons.delete(button);
 
         delete button._tsOriginal;
         delete button._tsApplied;
         delete button._tsLine;
+        delete button._tsSection;
+    }
+
+    _restoreButton(button) {
+        this._cleanupButton(button, true);
     }
 
     _applySpacing(section) {
@@ -139,10 +182,26 @@ export default class TopbarSpacingExtension extends Extension {
         for (const actor of section.box.get_children())
             this._overrideStyle(actor, section);
 
-        section.addedSignal = section.box.connect(
-            'child-added',
-            (_container, actor) => this._overrideStyle(actor, section)
-        );
+        if (!section.addedSignal) {
+            section.addedSignal = section.box.connect(
+                'child-added',
+                (_container, actor) => {
+                    this._overrideStyle(actor, section);
+                }
+            );
+        }
+
+        if (!section.removedSignal) {
+            section.removedSignal = section.box.connect(
+                'child-removed',
+                (_container, actor) => {
+                    const button = this._getPanelButton(actor);
+
+                    if (button && button._tsSection === section)
+                        this._restoreButton(button);
+                }
+            );
+        }
     }
 
     _removeSpacing(section) {
@@ -151,10 +210,13 @@ export default class TopbarSpacingExtension extends Extension {
             section.addedSignal = null;
         }
 
-        for (const actor of section.box.get_children()) {
-            const button = this._getPanelButton(actor);
+        if (section.removedSignal) {
+            section.box.disconnect(section.removedSignal);
+            section.removedSignal = null;
+        }
 
-            if (button)
+        for (const button of [...this._buttons]) {
+            if (button._tsSection === section)
                 this._restoreButton(button);
         }
     }
@@ -166,7 +228,11 @@ export default class TopbarSpacingExtension extends Extension {
         for (const section of this._sections)
             this._removeSpacing(section);
 
+        for (const button of [...this._buttons])
+            this._restoreButton(button);
+
         this._settingsSignals = null;
+        this._buttons = null;
         this._sections = null;
         this._settings = null;
     }
