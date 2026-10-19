@@ -12,7 +12,7 @@ GITIGNORE_PATH = PROJECT_DIR / ".gitignore"
 
 
 def get_files_path() -> list[Path]:
-    patterns = [".git/", ".venv/", ".gitignore", "README.md", "*.py"]
+    patterns = [".git/", ".venv/", ".gitignore", "README.md", "*.py", "requirements.txt"]
     if GITIGNORE_PATH.exists():
         with GITIGNORE_PATH.open("r", encoding="utf-8") as file:
             patterns.extend(file.readlines())
