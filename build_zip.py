@@ -50,11 +50,6 @@ def build_zip() -> None:
         print(f" - {path.relative_to(PROJECT_DIR)}")
 
 
-
-
-
-
-
 if __name__ == "__main__":
     build_zip()
     print()
