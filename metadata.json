@@ -2,7 +2,7 @@
   "name": "Topbar Spacing",
   "description": "Adjust the spacing of the GNOME top bar",
   "uuid": "topbar-spacing@salirezak.github.io",
-  "version": 1,
+  "version": "1.0.0",
   "shell-version": ["50"],
   "settings-schema": "org.gnome.shell.extensions.topbar-spacing",
   "url": "https://github.com/salirezak/topbar-spacing"
